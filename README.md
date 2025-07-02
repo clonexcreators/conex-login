@@ -36,7 +36,7 @@ CloneX Universal Login assigns access based on your NFT holdings. The system sup
 
 | Level                 | Title            | Requirements           | Subdomain Access             |
 | --------------------- | ---------------- | ---------------------- | ---------------------------- |
-| **COSMIC\_CHAMPION**  | Cosmic Champion  | 15+ CloneX, 10+ Animus | All subdomains + admin       |
+| **COSMIC\_CHAMPION**  | Cosmic Champion  | 15+ CloneX, 10+ Animus | All subdomains + lab         |
 | **CLONE\_VANGUARD**   | Clone Vanguard   | 5+ CloneX, 5+ Animus   | All except admin             |
 | **CLONE\_DISCIPLE**   | Clone Disciple   | 1+ CloneX              | profile, lore, gro, research |
 | **ANIMUS\_PRIME**     | Animus Prime     | 5+ Animus (0 CloneX)   | profile, lore, gro, research |
