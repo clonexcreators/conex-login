@@ -1,0 +1,128 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const shimDir = path.resolve(__dirname, '../src/shims');
+if (!fs.existsSync(shimDir)) fs.mkdirSync(shimDir, { recursive: true });
+
+// Shim contents
+const useSyncExternalStoreShimContent = `...`; // (unchanged)
+const eventsShimContent = `...`; // (unchanged)
+const mittShimContent = `...`; // (unchanged)
+const pinoShimContent = `...`; // (unchanged)
+const eventEmitterShimContent = `...`; // (unchanged)
+const useLocalStorageShimContent = `...`; // (unchanged)
+
+const shims = [
+  {
+    name: 'use-sync-external-store-with-selector.js',
+    module: 'use-sync-external-store/with-selector',
+    content: useSyncExternalStoreShimContent
+  },
+  {
+    name: 'events.js',
+    module: 'events',
+    content: eventsShimContent
+  },
+  {
+    name: 'useLocalStorage.js',
+    module: 'react-use/lib/useLocalStorage',
+    content: useLocalStorageShimContent
+  },
+  {
+    name: 'mitt.js',
+    module: 'mitt',
+    content: mittShimContent
+  },
+  {
+    name: 'pino-browser.js',
+    module: 'pino/browser.js',
+    content: pinoShimContent
+  },
+  {
+    name: 'eventemitter3.js',
+    module: 'eventemitter3',
+    skipAlias: false,
+    content: eventEmitterShimContent
+  }
+];
+
+console.log('📝 Writing compatibility shims...\n');
+for (const shim of shims) {
+  // ⛔ Skip WalletConnect logger shim to protect manual edits
+  if (shim.name.includes('walletconnect-logger')) {
+    console.log(`⏭️  Skipping manual shim: ${shim.name}`);
+    continue;
+  }
+
+  const filePath = path.join(shimDir, shim.name);
+  fs.writeFileSync(filePath, shim.content + '\n');
+  console.log('✅ Shim written:', filePath);
+}
+
+// Patch known modules with missing exports
+const patchableModules = [
+  { name: 'mitt', main: 'index.js' },
+  { name: 'pino', main: 'browser.js' },
+  { name: 'use-sync-external-store', main: 'shim/with-selector.js' },
+  { name: 'eventemitter3', main: 'index.js' }
+];
+
+// Modules to warn about but not patch
+const knownOffenders = [
+  'nanoevents',
+  'universal-cookie',
+  'react-use',
+  '@walletconnect/logger',
+  '@pinojs/browser'
+];
+
+console.log('\n🔍 Patching node_modules for broken ESM exports:\n');
+
+for (const mod of patchableModules) {
+  const pkgJsonPath = path.resolve(__dirname, '../node_modules', mod.name, 'package.json');
+  if (!fs.existsSync(pkgJsonPath)) {
+    console.warn('⚠️  Skipped', mod.name + ': package.json not found');
+    continue;
+  }
+
+  const pkgData = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+  const backupPath = pkgJsonPath + '.bak';
+
+  if (!fs.existsSync(backupPath)) {
+    fs.copyFileSync(pkgJsonPath, backupPath);
+    console.log('🧷 Backup created:', mod.name + '/package.json.bak');
+  }
+
+  if (!pkgData.exports || typeof pkgData.exports !== 'object') {
+    pkgData.exports = {
+      '.': {
+        import: './' + mod.main,
+        require: './' + mod.main
+      }
+    };
+    console.log('🛠 Patched exports in:', mod.name + '/package.json');
+  } else if (!pkgData.exports['.'] || !pkgData.exports['.'].import) {
+    pkgData.exports['.'] = {
+      ...pkgData.exports['.'],
+      import: './' + mod.main
+    };
+    console.log('🔧 Extended exports.import for:', mod.name + '/package.json');
+  }
+
+  fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgData, null, 2));
+}
+
+console.log('\n🚨 Scanning for other known ESM-breaker modules:\n');
+for (const pkg of knownOffenders) {
+  const offenderPath = path.resolve(__dirname, '../node_modules', pkg);
+  if (fs.existsSync(offenderPath)) {
+    console.warn('⚠️  Warning: Detected potential ESM issue with "' + pkg + '". Consider shimming or verifying its exports.');
+  }
+}
+
+console.log('\n🎉 Prebuild validation completed successfully!');
+console.log('🔧 Run "npm run dev" to start development with patched modules');

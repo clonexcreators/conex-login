@@ -1,0 +1,280 @@
+/* Research Facility Font Imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
+
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* CloneX Research Facility Color Palette - Flat Only */
+  --bg: #FAFAF0;
+  --primary: #FF5AF7;
+  --accent: #00C2FF;
+  --tag: #6EFFC7;
+  --text-main: #000000;
+  --text-subtle: #4A4A4A;
+  --border: #1C1C1C;
+  
+  /* Additional lab colors */
+  --surface: #FFFFFF;
+  --surface-elevated: #F5F5F5;
+  --danger: #FF3B3B;
+  --warning: #FFB800;
+  --success: #00D26A;
+  
+  /* Spacing system */
+  --space-unit: 8px;
+  --border-radius: 12px;
+  --border-radius-pill: 24px;
+  --border-width: 2px;
+}
+
+@layer base {
+  * {
+    @apply font-sans;
+  }
+  
+  body {
+    font-family: 'Inter', 'Rajdhani', system-ui, -apple-system, sans-serif;
+    font-weight: 500;
+    background-color: var(--bg);
+    color: var(--text-main);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  /* Research Facility Base Components */
+  .lab-surface {
+    @apply bg-white border-2 border-[#1C1C1C];
+    border-radius: var(--border-radius);
+  }
+  
+  .lab-surface-elevated {
+    @apply bg-[#F5F5F5] border-2 border-[#1C1C1C];
+    border-radius: var(--border-radius);
+  }
+  
+  .lab-button-primary {
+    @apply bg-[#FF5AF7] text-black border-2 border-[#1C1C1C] font-bold;
+    border-radius: var(--border-radius-pill);
+    transition: all 0.15s ease;
+  }
+  
+  .lab-button-primary:hover {
+    @apply bg-[#FF3AE6] transform scale-105;
+  }
+  
+  .lab-button-secondary {
+    @apply bg-[#00C2FF] text-black border-2 border-[#1C1C1C] font-bold;
+    border-radius: var(--border-radius-pill);
+    transition: all 0.15s ease;
+  }
+  
+  .lab-button-secondary:hover {
+    @apply bg-[#00B2EF] transform scale-105;
+  }
+  
+  .lab-button-outline {
+    @apply bg-transparent text-[#1C1C1C] border-2 border-[#1C1C1C] font-bold;
+    border-radius: var(--border-radius-pill);
+    transition: all 0.15s ease;
+  }
+  
+  .lab-button-outline:hover {
+    @apply bg-[#1C1C1C] text-white;
+  }
+  
+  .lab-input {
+    @apply bg-white border-2 border-[#1C1C1C] text-black placeholder-[#4A4A4A] font-medium;
+    border-radius: var(--border-radius-pill);
+    transition: all 0.15s ease;
+  }
+  
+  .lab-input:focus {
+    @apply border-[#00C2FF] outline-none;
+  }
+  
+  .lab-badge {
+    @apply bg-[#6EFFC7] text-black border-2 border-[#1C1C1C] font-bold text-xs;
+    border-radius: var(--border-radius);
+    padding: 4px 12px;
+  }
+  
+  .lab-badge-primary {
+    @apply bg-[#FF5AF7] text-black border-2 border-[#1C1C1C] font-bold text-xs;
+    border-radius: var(--border-radius);
+    padding: 4px 12px;
+  }
+  
+  .lab-badge-accent {
+    @apply bg-[#00C2FF] text-black border-2 border-[#1C1C1C] font-bold text-xs;
+    border-radius: var(--border-radius);
+    padding: 4px 12px;
+  }
+  
+  .lab-badge-danger {
+    @apply bg-[#FF3B3B] text-white border-2 border-[#1C1C1C] font-bold text-xs;
+    border-radius: var(--border-radius);
+    padding: 4px 12px;
+  }
+  
+  /* Lab Badge with Status Indicator */
+  .lab-profile-badge {
+    @apply bg-white border-2 border-[#1C1C1C] p-4;
+    border-radius: var(--border-radius);
+  }
+  
+  /* Research Panel */
+  .research-panel {
+    @apply bg-white border-2 border-[#1C1C1C] p-6;
+    border-radius: var(--border-radius);
+  }
+  
+  /* DNA Scanner Button */
+  .dna-scanner {
+    @apply bg-[#FF5AF7] text-black border-2 border-[#1C1C1C] font-bold px-8 py-4;
+    border-radius: var(--border-radius-pill);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.15s ease;
+  }
+  
+  .dna-scanner:hover {
+    @apply transform scale-105;
+  }
+  
+  .dna-scanner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    transition: left 0.5s ease;
+  }
+  
+  .dna-scanner:hover::before {
+    left: 100%;
+  }
+  
+  /* Scanline Animation */
+  @keyframes scanline {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  .scanline-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scanline-effect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--accent);
+    animation: scanline 2s ease-in-out infinite;
+  }
+  
+  /* Label Slide Animation */
+  .input-group {
+    @apply relative;
+  }
+  
+  .input-group input:focus + label,
+  .input-group input:not(:placeholder-shown) + label {
+    @apply transform -translate-y-6 scale-75 text-[#00C2FF];
+  }
+  
+  .input-group label {
+    @apply absolute left-4 top-3 text-[#4A4A4A] font-medium transition-all duration-200 pointer-events-none;
+    transform-origin: left top;
+  }
+  
+  /* Pulse Border Animation */
+  @keyframes border-pulse {
+    0%, 100% { border-color: var(--border); }
+    50% { border-color: var(--accent); }
+  }
+  
+  .border-pulse {
+    animation: border-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Data Grid */
+  .data-grid {
+    @apply grid gap-4;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  /* Lab Typography */
+  .lab-heading-xl {
+    @apply text-4xl md:text-6xl font-black tracking-tight text-black;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  .lab-heading-lg {
+    @apply text-3xl md:text-4xl font-bold tracking-tight text-black;
+  }
+  
+  .lab-heading-md {
+    @apply text-xl md:text-2xl font-bold text-black;
+  }
+  
+  .lab-text {
+    @apply text-base font-medium text-[#4A4A4A];
+  }
+  
+  .lab-text-sm {
+    @apply text-sm font-medium text-[#4A4A4A];
+  }
+  
+  /* Remove all shadows and gradients */
+  .no-shadow {
+    box-shadow: none !important;
+  }
+  
+  /* Flat geometric patterns */
+  .geometric-lab {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%231C1C1C' fill-opacity='0.03'%3E%3Cpath d='M20 20L0 0h20v20zM40 0L20 20V0h20z'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  
+  /* Status indicators */
+  .status-online {
+    @apply bg-[#00D26A];
+  }
+  
+  .status-offline {
+    @apply bg-[#FF3B3B];
+  }
+  
+  .status-processing {
+    @apply bg-[#FFB800];
+  }
+}
+
+/* Override any remaining shadow utilities */
+.shadow-none { box-shadow: none !important; }
+.shadow-sm { box-shadow: none !important; }
+.shadow { box-shadow: none !important; }
+.shadow-md { box-shadow: none !important; }
+.shadow-lg { box-shadow: none !important; }
+.shadow-xl { box-shadow: none !important; }
+.shadow-2xl { box-shadow: none !important; }
