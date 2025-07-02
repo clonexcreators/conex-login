@@ -155,16 +155,27 @@ export const analyzeBundleSize = (): Promise<BundleAnalysis> => {
   });
 };
 
-// Critical resource hints for faster loading
+// Critical resource hints for faster loading - FIXED FONT PRELOADING
 export const addCriticalResourceHints = () => {
-  // Preload critical CSS
-  preloadResource('/assets/css/index.css', 'style');
-  
-  // Preload critical fonts
-  preloadResource('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap', 'style');
-  
-  // DNS prefetch for external resources
+  // Only preload fonts if we're actually using them immediately
   if (typeof document !== 'undefined') {
+    // Check if Inter font is actually being used in CSS
+    const hasInterFont = Array.from(document.styleSheets).some(sheet => {
+      try {
+        return Array.from(sheet.cssRules).some(rule => 
+          rule.cssText && rule.cssText.includes('Inter')
+        );
+      } catch (e) {
+        return false;
+      }
+    });
+
+    // Only preload if we're using it
+    if (hasInterFont) {
+      preloadResource('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap', 'style');
+    }
+    
+    // DNS prefetch for external resources
     const dnsPrefetch = (href: string) => {
       const link = document.createElement('link');
       link.rel = 'dns-prefetch';
@@ -275,7 +286,7 @@ export const optimizeAssets = () => {
     }
   });
   
-  // Optimize font loading
+  // Optimize font loading - ensure fonts are actually used before preloading
   const fontFaces = document.querySelectorAll('link[rel="preload"][as="font"]');
   fontFaces.forEach(font => {
     if (!font.hasAttribute('crossorigin')) {
@@ -286,7 +297,10 @@ export const optimizeAssets = () => {
 
 // Initialize all performance optimizations
 export const initializePerformanceOptimizations = () => {
-  addCriticalResourceHints();
+  // Defer critical resource hints to avoid unused preload warnings
+  setTimeout(() => {
+    addCriticalResourceHints();
+  }, 100);
   
   // Defer non-critical optimizations
   setTimeout(() => {

@@ -159,28 +159,6 @@ const pinoShimContent = `export default {
   silent: () => {}
 };`;
 
-const eventEmitterShimContent = `class EventEmitter {
-  constructor() {
-    this.events = {};
-  }
-
-  on(event, fn) {
-    this.events[event] = this.events[event] || [];
-    this.events[event].push(fn);
-  }
-
-  off(event, fn) {
-    this.events[event] = (this.events[event] || []).filter(f => f !== fn);
-  }
-
-  emit(event, ...args) {
-    for (const fn of this.events[event] || []) fn(...args);
-  }
-}
-
-export { EventEmitter };
-export default EventEmitter;`;
-
 const useLocalStorageShimContent = `// React-use localStorage shim
 import { useState, useEffect } from 'react';
 
@@ -233,13 +211,8 @@ const shims = [
     name: 'pino-browser.js',
     module: 'pino/browser.js',
     content: pinoShimContent
-  },
-  {
-    name: 'eventemitter3.js',
-    module: 'eventemitter3',
-    skipAlias: false,
-    content: eventEmitterShimContent
   }
+  // Removed eventemitter3 - now using the real package
 ];
 
 // Write shim files - FIX: Use actual newline, not literal \n
@@ -258,12 +231,11 @@ for (const shim of shims) {
   console.log('✅ Shim written: ' + filePath);
 }
 
-// Known problem modules to patch
+// Known problem modules to patch (removed eventemitter3)
 const patchableModules = [
   { name: 'mitt', main: 'index.js' },
   { name: 'pino', main: 'browser.js' },
-  { name: 'use-sync-external-store', main: 'shim/with-selector.js' },
-  { name: 'eventemitter3', main: 'index.js' }
+  { name: 'use-sync-external-store', main: 'shim/with-selector.js' }
 ];
 
 // Additional ESM troublemakers to detect (warn only)
@@ -327,3 +299,4 @@ for (const pkg of knownOffenders) {
 console.log('');
 console.log('🎉 Prebuild validation completed successfully!');
 console.log('🔧 Run "npm run dev" to start development with patched modules');
+console.log('✨ Now using real eventemitter3 package instead of custom shim');

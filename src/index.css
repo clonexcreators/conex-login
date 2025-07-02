@@ -1,4 +1,4 @@
-/* Research Facility Font Imports */
+/* Preload fonts with proper display strategy */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
 
@@ -41,6 +41,8 @@
     font-weight: 500;
     background-color: var(--bg);
     color: var(--text-main);
+    /* Ensure fonts are actually used immediately */
+    font-display: swap;
   }
   
   h1, h2, h3, h4, h5, h6 {
